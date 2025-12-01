@@ -285,6 +285,46 @@
       return `${hijriMonthNames[hijriMonth]} ${hijriYear}H`;
     }
 
+    // Fungsi untuk convert Gregorian ke Hijrah untuk hari tertentu
+    function gregorianToHijriDay(date) {
+      const baseGregorian = new Date(2025, 6, 7);
+      const baseHijriYear = 1447;
+      const baseHijriMonth = 0;
+      const baseHijriDay = 1;
+      
+      const daysDiff = Math.floor((date - baseGregorian) / (1000 * 60 * 60 * 24));
+      
+      let totalHijriDays = baseHijriDay + daysDiff;
+      let hijriYear = baseHijriYear;
+      let hijriMonth = baseHijriMonth;
+      
+      while (totalHijriDays > 29) {
+        totalHijriDays -= 29;
+        hijriMonth++;
+        if (hijriMonth >= 12) {
+          hijriMonth = 0;
+          hijriYear++;
+        }
+      }
+      
+      while (totalHijriDays < 1) {
+        hijriMonth--;
+        if (hijriMonth < 0) {
+          hijriMonth = 11;
+          hijriYear--;
+        }
+        totalHijriDays += 29;
+      }
+      
+      const hijriMonthNames = [
+        "Muh", "Saf", "RAw", "RAk", 
+        "JAw", "JAk", "Raj", "Sya",
+        "Ram", "Syw", "Zka", "Zhi"
+      ];
+      
+      return `${totalHijriDays} ${hijriMonthNames[hijriMonth]}`;
+    }
+
     // ---------------
     // STORAGE (localStorage + Google Apps Script sync)
     // ---------------
@@ -533,7 +573,7 @@
           const cell = document.createElement("button");
           cell.type = "button";
           cell.className = "day-cell relative flex flex-col items-stretch text-left rounded-lg md:rounded-xl p-2 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all";
-          cell.style.minHeight = "0";
+          cell.style.minHeight = "120px";
           cell.style.height = "100%";
 
           if (!day) {
@@ -554,7 +594,7 @@
           const isToday = isSameDate(day, today);
 
           const headerDiv = document.createElement("div");
-          headerDiv.className = "flex items-center justify-between mb-1 md:mb-2";
+          headerDiv.className = "flex flex-col mb-1 md:mb-2";
 
           const dayNumSpan = document.createElement("span");
           dayNumSpan.textContent = day.getDate();
@@ -563,7 +603,13 @@
             dayNumSpan.className += " text-orange-600";
           }
 
+          const hijriDateSpan = document.createElement("span");
+          const hijriDate = gregorianToHijriDay(day);
+          hijriDateSpan.textContent = hijriDate;
+          hijriDateSpan.className = "text-[8px] md:text-[9px] lg:text-[10px] font-semibold text-green-600 mt-0.5";
+
           headerDiv.appendChild(dayNumSpan);
+          headerDiv.appendChild(hijriDateSpan);
           cell.appendChild(headerDiv);
 
           const contentDiv = document.createElement("div");
@@ -1367,5 +1413,5 @@
       }, 150);
     })();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a736e1ac4a41a53',t:'MTc2NDYwMDk3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a73761af5ec1a53',t:'MTc2NDYwMTMwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
