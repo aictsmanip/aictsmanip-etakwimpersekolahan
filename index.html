@@ -1,0 +1,1376 @@
+<!doctype html>
+<html lang="ms">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Takwim Persekolahan 2026</title><!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script><!-- Canva SDK -->
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .app-wrapper {
+      width: 100%;
+      height: 100%;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 9999px;
+    }
+    .day-cell:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #f97316;
+      outline-offset: 2px;
+    }
+    .month-btn {
+      transition: all 0.2s ease;
+    }
+    .month-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .month-btn.active {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .logo-preview {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 3px solid #3b82f6;
+    }
+    .icon-preview {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .calendar-grid {
+        font-size: 10px;
+      }
+      .day-cell {
+        min-height: 70px !important;
+        padding: 4px !important;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .calendar-grid {
+        font-size: 9px;
+      }
+      .day-cell {
+        min-height: 60px !important;
+        padding: 3px !important;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full w-full">
+  <div id="app" class="app-wrapper bg-gradient-to-br from-blue-50 via-white to-purple-50 text-gray-900 flex flex-col">
+   <header class="w-full bg-white/80 backdrop-blur-sm shadow-md">
+    <div class="max-w-7xl mx-auto px-3 md:px-4 pt-3 md:pt-4 pb-2 md:pb-3">
+     <div class="flex items-center justify-between gap-2 md:gap-4 flex-wrap"><!-- Logo / Nama Sekolah -->
+      <div class="flex items-center gap-2 md:gap-3">
+       <div id="logo-container" class="flex items-center justify-center"><img id="logo-image" class="logo-preview hidden" alt="Logo Sekolah">
+        <div id="logo-circle" class="flex items-center justify-center rounded-full border-3 border-blue-600 w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
+         <svg viewbox="0 0 40 40" class="w-8 h-8 md:w-9 md:h-9 text-white" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"></circle> <path d="M12 24 L20 10 L28 24 Z" fill="currentColor"></path>
+         </svg>
+        </div>
+       </div>
+       <div>
+        <p id="teks-logo" class="font-bold tracking-wide text-sm md:text-base lg:text-lg text-gray-800">SMAN Islamiah Papar</p><button id="btn-upload-logo" type="button" class="text-[10px] md:text-xs text-blue-600 hover:text-blue-800 underline mt-0.5"> 📷 Tukar Logo </button> <input type="file" id="input-logo" accept="image/*" class="hidden">
+       </div>
+      </div><!-- Tajuk -->
+      <div class="flex-1 text-right">
+       <h1 id="tajuk-kalender" class="text-base md:text-2xl lg:text-3xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">TAKWIM PERSEKOLAHAN 2026</h1>
+      </div>
+     </div>
+    </div>
+   </header>
+   <main class="flex-1 w-full overflow-auto">
+    <div class="max-w-7xl mx-auto px-3 md:px-4 pb-3 md:pb-4 h-full flex flex-col gap-3 md:gap-4"><!-- Butang Bulan Berwarna-warni -->
+     <section class="w-full mt-2 md:mt-3" aria-label="Pilihan Bulan">
+      <div class="mb-2 md:mb-3"><button type="button" id="btn-tahunan" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl font-bold text-xs md:text-sm lg:text-base text-white shadow-lg" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);"> 📅 KALENDER TAHUNAN 2026 </button>
+      </div>
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-1.5 md:gap-2"><button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" data-month="0"> Jan </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);" data-month="1"> Feb </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);" data-month="2"> Mac </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);" data-month="3"> Apr </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);" data-month="4"> Mei </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);" data-month="5"> Jun </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);" data-month="6"> Jul </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);" data-month="7"> Ogo </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" data-month="8"> Sep </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" data-month="9"> Okt </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);" data-month="10"> Nov </button> <button type="button" class="month-btn px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl font-semibold text-[10px] md:text-xs lg:text-sm text-white shadow-md" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);" data-month="11"> Dis </button>
+      </div><!-- Petunjuk Bahagian & Cuti -->
+      <div class="flex flex-wrap gap-2 md:gap-3 text-[10px] md:text-xs lg:text-sm bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-3 items-center mt-2 md:mt-3 shadow-sm"><span class="font-bold text-gray-700 mr-1 md:mr-2">Petunjuk:</span> <span class="flex items-center gap-1 md:gap-1.5"> <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-sky-500"></span> <span class="text-gray-700">Pentadbiran</span> </span> <span class="flex items-center gap-1 md:gap-1.5"> <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-emerald-500"></span> <span class="text-gray-700">Kurikulum</span> </span> <span class="flex items-center gap-1 md:gap-1.5"> <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-amber-500"></span> <span class="text-gray-700">HEM</span> </span> <span class="flex items-center gap-1 md:gap-1.5"> <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-fuchsia-500"></span> <span class="text-gray-700">Kokum</span> </span> <span class="flex items-center gap-1 md:gap-1.5 ml-1 md:ml-2"> <span class="w-3 h-3 md:w-4 md:h-4 rounded bg-gray-400"></span> <span class="text-gray-700">Cuti</span> </span>
+      </div><!-- Panel Tetapan Apps Script & PDF -->
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-3 mt-2 md:mt-3 shadow-sm">
+       <div class="flex flex-col gap-2 md:gap-3"><!-- Apps Script URL -->
+        <div id="url-setup-section" class="flex-1"><label for="apps-script-url" class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1 md:mb-1.5"> 🔗 URL Google Apps Script (untuk sync real-time) </label>
+         <div class="flex gap-2"><input type="text" id="apps-script-url" class="flex-1 text-[10px] md:text-xs lg:text-sm px-2 md:px-3 py-1.5 md:py-2 rounded-lg border-2 border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"> <button id="btn-save-url" type="button" class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] md:text-xs lg:text-sm font-bold transition shadow-md"> Simpan </button>
+         </div>
+         <p id="url-status" class="text-[9px] md:text-[10px] lg:text-xs text-gray-600 mt-1">Status: <span id="url-status-text">Belum ditetapkan (data disimpan secara lokal)</span></p>
+        </div><!-- Butang Database & PDF -->
+        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center justify-between">
+         <div id="database-section" class="hidden"><button id="btn-database" type="button" class="w-full sm:w-auto px-4 md:px-6 py-2 md:py-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-[10px] md:text-xs lg:text-sm font-bold transition shadow-lg flex items-center justify-center gap-2"> 🗄️ DATABASE </button>
+          <p class="text-[9px] md:text-[10px] lg:text-xs text-green-700 mt-1 font-semibold text-center">✓ Tersambung ke Google Sheet</p>
+         </div>
+         <div class="flex flex-col sm:flex-row gap-2"><button id="btn-pdf-semua" type="button" class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white text-[10px] md:text-xs lg:text-sm font-bold transition shadow-md flex items-center justify-center gap-1 md:gap-2"> 📄 PDF Semua </button> <button id="btn-pdf-bulan" type="button" class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-[10px] md:text-xs lg:text-sm font-bold transition shadow-md flex items-center justify-center gap-1 md:gap-2"> 📄 PDF Bulan </button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section><!-- Banner Bulan -->
+     <div id="bulan-banner" class="rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm lg:text-base font-bold text-white shadow-lg" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+       <div>
+        <div id="bulan-nama-banner">
+         Januari 2026
+        </div>
+        <div id="bulan-hijrah" class="text-[10px] md:text-xs lg:text-sm font-normal opacity-90 mt-0.5 md:mt-1"><!-- Tarikh Hijrah akan dipaparkan di sini -->
+        </div>
+       </div><span class="text-[10px] md:text-xs lg:text-sm font-normal opacity-90"> Isnin → Ahad · Klik hari untuk isi maklumat </span>
+      </div>
+     </div><!-- Grid Kalender Bulanan -->
+     <section id="calendar-bulanan" class="flex-1 min-h-0 w-full custom-scroll overflow-auto rounded-xl md:rounded-2xl bg-white shadow-xl border border-gray-200 p-2 md:p-4" aria-label="Kalender Bulanan"><!-- Nama Hari -->
+      <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2 md:mb-3 text-[10px] md:text-xs lg:text-sm font-bold text-center text-gray-700">
+       <div class="py-1 md:py-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-md md:rounded-lg">
+        Isn
+       </div>
+       <div class="py-1 md:py-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-md md:rounded-lg">
+        Sel
+       </div>
+       <div class="py-1 md:py-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-md md:rounded-lg">
+        Rab
+       </div>
+       <div class="py-1 md:py-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-md md:rounded-lg">
+        Kha
+       </div>
+       <div class="py-1 md:py-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-md md:rounded-lg">
+        Jum
+       </div>
+       <div class="py-1 md:py-2 bg-gradient-to-br from-purple-100 to-purple-50 rounded-md md:rounded-lg">
+        Sab
+       </div>
+       <div class="py-1 md:py-2 bg-gradient-to-br from-purple-100 to-purple-50 rounded-md md:rounded-lg">
+        Ahd
+       </div>
+      </div><!-- Sel Hari -->
+      <div id="calendar-grid" class="calendar-grid grid grid-cols-7 gap-1 md:gap-2 text-[10px] md:text-xs lg:text-sm"></div>
+     </section><!-- Grid Kalender Tahunan -->
+     <section id="calendar-tahunan" class="hidden flex-1 min-h-0 w-full custom-scroll overflow-auto rounded-xl md:rounded-2xl bg-white shadow-xl border border-gray-200 p-2 md:p-4" aria-label="Kalender Tahunan">
+      <div id="yearly-calendar-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6"></div>
+     </section><!-- Panel Input -->
+     <section id="panel-input" class="w-full mt-2 bg-white shadow-xl border border-gray-200 rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-3 hidden" aria-label="Pengisian Maklumat Harian">
+      <div class="flex items-start justify-between gap-2">
+       <div class="flex-1">
+        <h2 id="panel-tajuk-hari" class="text-xs md:text-sm lg:text-base font-bold mb-1 text-gray-800">Pengisian Takwim</h2>
+        <p id="panel-sub-hari" class="text-[10px] md:text-xs lg:text-sm text-gray-600">Pilih mana-mana bahagian dan masukkan catatan. Hanya bahagian yang diisi akan dipaparkan.</p>
+       </div><button id="btn-tutup-panel" type="button" class="text-[10px] md:text-xs lg:text-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition font-medium"> Tutup </button>
+      </div>
+      <form id="form-harian" class="mt-2 md:mt-3 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-[10px] md:text-xs lg:text-sm"><!-- Pentadbiran -->
+       <div class="flex flex-col gap-1 md:gap-1.5"><label for="input-pentadbiran" class="font-bold text-sky-600 flex items-center gap-1 md:gap-1.5"> <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-sky-500"></span> Pentadbiran </label> <textarea id="input-pentadbiran" name="pentadbiran" class="min-h-[60px] md:min-h-[70px] rounded-lg md:rounded-xl bg-sky-50 border-2 border-sky-300 px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs lg:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-y" placeholder="Contoh: Mesyuarat guru, pelancaran, taklimat..."></textarea>
+        <div class="flex items-center gap-2"><button type="button" class="upload-icon-btn text-[9px] md:text-[10px] text-blue-600 hover:text-blue-800 underline" data-field="pentadbiran"> 📷 Tambah Icon </button> <input type="file" class="icon-input hidden" accept="image/*" data-field="pentadbiran">
+        </div>
+       </div><!-- Kurikulum -->
+       <div class="flex flex-col gap-1 md:gap-1.5"><label for="input-kurikulum" class="font-bold text-emerald-600 flex items-center gap-1 md:gap-1.5"> <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-500"></span> Kurikulum </label> <textarea id="input-kurikulum" name="kurikulum" class="min-h-[60px] md:min-h-[70px] rounded-lg md:rounded-xl bg-emerald-50 border-2 border-emerald-300 px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs lg:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-y" placeholder="Contoh: Peperiksaan, program akademik, PLC..."></textarea>
+        <div class="flex items-center gap-2"><button type="button" class="upload-icon-btn text-[9px] md:text-[10px] text-blue-600 hover:text-blue-800 underline" data-field="kurikulum"> 📷 Tambah Icon </button> <input type="file" class="icon-input hidden" accept="image/*" data-field="kurikulum">
+        </div>
+       </div><!-- HEM -->
+       <div class="flex flex-col gap-1 md:gap-1.5"><label for="input-hem" class="font-bold text-amber-600 flex items-center gap-1 md:gap-1.5"> <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-500"></span> Hal Ehwal Murid (HEM) </label> <textarea id="input-hem" name="hem" class="min-h-[60px] md:min-h-[70px] rounded-lg md:rounded-xl bg-amber-50 border-2 border-amber-300 px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs lg:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y" placeholder="Contoh: Program sahsiah, kebajikan, disiplin..."></textarea>
+        <div class="flex items-center gap-2"><button type="button" class="upload-icon-btn text-[9px] md:text-[10px] text-blue-600 hover:text-blue-800 underline" data-field="hem"> 📷 Tambah Icon </button> <input type="file" class="icon-input hidden" accept="image/*" data-field="hem">
+        </div>
+       </div><!-- Kokum -->
+       <div class="flex flex-col gap-1 md:gap-1.5"><label for="input-kokum" class="font-bold text-fuchsia-600 flex items-center gap-1 md:gap-1.5"> <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-fuchsia-500"></span> Kokurikulum </label> <textarea id="input-kokum" name="kokum" class="min-h-[60px] md:min-h-[70px] rounded-lg md:rounded-xl bg-fuchsia-50 border-2 border-fuchsia-300 px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs lg:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 resize-y" placeholder="Contoh: Kelab, persatuan, sukan, unit beruniform..."></textarea>
+        <div class="flex items-center gap-2"><button type="button" class="upload-icon-btn text-[9px] md:text-[10px] text-blue-600 hover:text-blue-800 underline" data-field="kokum"> 📷 Tambah Icon </button> <input type="file" class="icon-input hidden" accept="image/*" data-field="kokum">
+        </div>
+       </div><!-- Nama Cuti (hanya muncul bila tandakan cuti) -->
+       <div id="cuti-name-section" class="md:col-span-2 flex flex-col gap-1 md:gap-1.5 hidden"><label for="input-nama-cuti" class="font-bold text-red-600 flex items-center gap-1 md:gap-1.5"> <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500"></span> Nama Cuti </label> <input type="text" id="input-nama-cuti" name="nama_cuti" class="rounded-lg md:rounded-xl bg-red-50 border-2 border-red-300 px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs lg:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Contoh: Cuti Pertengahan Penggal, Cuti Perayaan, Cuti Umum...">
+       </div><!-- Catatan -->
+       <div class="md:col-span-2 flex flex-col gap-1 md:gap-1.5"><label for="input-catatan" class="font-bold text-gray-700 flex items-center gap-1 md:gap-1.5"> <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-gray-500"></span> Catatan </label> <textarea id="input-catatan" name="catatan" class="min-h-[60px] md:min-h-[70px] rounded-lg md:rounded-xl bg-gray-50 border-2 border-gray-300 px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs lg:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 resize-y" placeholder="Contoh: Nota tambahan, peringatan, maklumat penting..."></textarea>
+        <div class="flex items-center gap-2"><button type="button" class="upload-icon-btn text-[9px] md:text-[10px] text-blue-600 hover:text-blue-800 underline" data-field="catatan"> 📷 Tambah Icon </button> <input type="file" class="icon-input hidden" accept="image/*" data-field="catatan">
+        </div>
+       </div><!-- Butang Simpan -->
+       <div class="md:col-span-2 flex items-center justify-between mt-1 md:mt-2 flex-wrap gap-2"><span id="status-simpan" class="text-[10px] md:text-xs lg:text-sm text-gray-600 font-medium"> Tiada perubahan belum disimpan. </span>
+        <div class="flex items-center gap-2"><button id="btn-tandakan-cuti" type="button" class="text-[10px] md:text-xs lg:text-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full border-2 border-gray-400 text-gray-700 hover:bg-gray-100 transition font-medium"> Tandakan Cuti </button> <button id="btn-batal-cuti" type="button" class="text-[10px] md:text-xs lg:text-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full border-2 border-gray-400 text-gray-700 hover:bg-gray-100 transition font-medium hidden"> Nyah Cuti </button> <button id="btn-simpan" type="submit" class="text-[10px] md:text-xs lg:text-sm px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold transition shadow-md disabled:opacity-60 disabled:cursor-not-allowed"> Simpan </button>
+        </div>
+       </div>
+      </form>
+     </section><!-- Real-time Update Info -->
+     <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-1.5 md:py-2 shadow-sm">
+      <div class="flex items-center justify-between text-[10px] md:text-xs lg:text-sm flex-wrap gap-1"><span class="text-gray-600 font-medium">Kemaskini Terakhir:</span> <span id="last-update-time" class="text-blue-600 font-bold"> <!-- Will be updated by JavaScript --> </span>
+      </div>
+     </div><!-- Footer -->
+     <footer class="w-full mt-1 md:mt-2">
+      <p id="teks-footer" class="text-[10px] md:text-xs lg:text-sm text-gray-500 text-center font-medium mb-1 md:mb-2"></p>
+      <div class="flex items-center justify-center gap-2 text-[9px] md:text-[10px] lg:text-xs text-gray-400"><span>©</span> <span class="font-bold">AI.ICTSMANIP</span> <span>|</span> <span>Powered by CANVA</span>
+      </div>
+     </footer>
+    </div>
+   </main>
+  </div>
+  <script>
+    // -------------------------------
+    // DEFAULT CONFIG
+    // -------------------------------
+    const defaultConfig = {
+      tajuk_kalender: "TAKWIM PERSEKOLAHAN 2026",
+      teks_logo: "SMAN Islamiah Papar",
+      teks_footer: "",
+      background_color: "#f0f9ff",
+      surface_color: "#ffffff",
+      text_color: "#111827",
+      primary_action_color: "#3b82f6",
+      secondary_action_color: "#8b5cf6",
+      font_family: "Inter",
+      font_size: 14
+    };
+
+    // Warna bulan untuk banner (setiap bulan warna berbeza)
+    const bulanStyles = [
+      { nama: "Januari 2026", gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)" },
+      { nama: "Februari 2026", gradient: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" },
+      { nama: "Mac 2026", gradient: "linear-gradient(135deg, #eab308 0%, #ca8a04 100%)" },
+      { nama: "April 2026", gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)" },
+      { nama: "Mei 2026", gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)" },
+      { nama: "Jun 2026", gradient: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)" },
+      { nama: "Julai 2026", gradient: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)" },
+      { nama: "Ogos 2026", gradient: "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" },
+      { nama: "September 2026", gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" },
+      { nama: "Oktober 2026", gradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)" },
+      { nama: "November 2026", gradient: "linear-gradient(135deg, #a855f7 0%, #9333ea 100%)" },
+      { nama: "Disember 2026", gradient: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)" }
+    ];
+
+    // Fungsi untuk convert Gregorian ke Hijrah (anggaran)
+    function gregorianToHijri(year, month) {
+      const baseGregorian = new Date(2025, 6, 7);
+      const baseHijriYear = 1447;
+      const baseHijriMonth = 0;
+      
+      const targetDate = new Date(year, month, 1);
+      const daysDiff = Math.floor((targetDate - baseGregorian) / (1000 * 60 * 60 * 24));
+      const hijriMonthsDiff = Math.floor(daysDiff / 29.5);
+      
+      let hijriYear = baseHijriYear;
+      let hijriMonth = baseHijriMonth + hijriMonthsDiff;
+      
+      while (hijriMonth >= 12) {
+        hijriMonth -= 12;
+        hijriYear++;
+      }
+      while (hijriMonth < 0) {
+        hijriMonth += 12;
+        hijriYear--;
+      }
+      
+      const hijriMonthNames = [
+        "Muharram", "Safar", "Rabiulawal", "Rabiulakhir", 
+        "Jamadilawal", "Jamadilakhir", "Rejab", "Syaaban",
+        "Ramadan", "Syawal", "Zulkaedah", "Zulhijjah"
+      ];
+      
+      return `${hijriMonthNames[hijriMonth]} ${hijriYear}H`;
+    }
+
+    // ---------------
+    // STORAGE (localStorage + Google Apps Script sync)
+    // ---------------
+    const STORAGE_KEY = "takwim_sman_2026";
+    const APPS_SCRIPT_URL_KEY = "takwim_apps_script_url";
+    const LOGO_IMAGE_KEY = "takwim_logo_image";
+    let currentRecords = [];
+    let selectedDateKey = null;
+    let selectedRecord = null;
+    let appsScriptUrl = "";
+    let isSyncing = false;
+    let logoImageData = "";
+
+    function loadFromStorage() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (data) {
+          currentRecords = JSON.parse(data);
+        }
+        appsScriptUrl = localStorage.getItem(APPS_SCRIPT_URL_KEY) || "";
+        logoImageData = localStorage.getItem(LOGO_IMAGE_KEY) || "";
+        updateUrlStatus();
+        updateLogoDisplay();
+      } catch (e) {
+        console.error("Gagal membaca data:", e);
+      }
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentRecords));
+      } catch (e) {
+        console.error("Gagal menyimpan data:", e);
+      }
+    }
+
+    function updateLogoDisplay() {
+      const logoImage = document.getElementById("logo-image");
+      const logoCircle = document.getElementById("logo-circle");
+      
+      if (logoImageData) {
+        logoImage.src = logoImageData;
+        logoImage.classList.remove("hidden");
+        logoCircle.classList.add("hidden");
+      } else {
+        logoImage.classList.add("hidden");
+        logoCircle.classList.remove("hidden");
+      }
+    }
+
+    function updateUrlStatus() {
+      const urlInput = document.getElementById("apps-script-url");
+      const urlStatusText = document.getElementById("url-status-text");
+      const urlSetupSection = document.getElementById("url-setup-section");
+      const databaseSection = document.getElementById("database-section");
+      
+      if (urlInput) {
+        urlInput.value = appsScriptUrl;
+      }
+      
+      if (appsScriptUrl) {
+        if (urlSetupSection) urlSetupSection.classList.add("hidden");
+        if (databaseSection) databaseSection.classList.remove("hidden");
+      } else {
+        if (urlSetupSection) urlSetupSection.classList.remove("hidden");
+        if (databaseSection) databaseSection.classList.add("hidden");
+        
+        if (urlStatusText) {
+          urlStatusText.textContent = "Belum ditetapkan (data disimpan secara lokal)";
+          urlStatusText.className = "text-gray-600";
+        }
+      }
+    }
+
+    function updateLastUpdateTime() {
+      const lastUpdateEl = document.getElementById("last-update-time");
+      if (!lastUpdateEl) return;
+
+      const now = new Date();
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+      
+      const formattedTime = now.toLocaleDateString('ms-MY', options);
+      lastUpdateEl.textContent = formattedTime;
+    }
+
+    setInterval(updateLastUpdateTime, 1000);
+
+    async function syncToGoogleSheet(action, record) {
+      if (!appsScriptUrl || isSyncing) return;
+      
+      isSyncing = true;
+      try {
+        await fetch(appsScriptUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: action,
+            data: record
+          })
+        });
+        
+        console.log("Data dihantar ke Google Sheet");
+      } catch (e) {
+        console.error("Gagal sync ke Google Sheet:", e);
+      } finally {
+        isSyncing = false;
+      }
+    }
+
+    async function loadFromGoogleSheet() {
+      if (!appsScriptUrl) return;
+      
+      try {
+        const response = await fetch(appsScriptUrl + "?action=getAll");
+        const data = await response.json();
+        
+        if (data && Array.isArray(data.records)) {
+          currentRecords = data.records;
+          saveToStorage();
+          renderCalendar(2026, currentMonth);
+        }
+      } catch (e) {
+        console.error("Gagal membaca dari Google Sheet:", e);
+      }
+    }
+
+    function makeDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function findRecordByDateKey(dateKey) {
+      return currentRecords.find(r => r.date_key === dateKey);
+    }
+
+    // --------------
+    // KALENDAR LOGIK
+    // --------------
+    const calendarGridEl = document.getElementById("calendar-grid");
+    const bulanBannerEl = document.getElementById("bulan-banner");
+    const bulanNamaBannerEl = document.getElementById("bulan-nama-banner");
+    const monthButtons = document.querySelectorAll(".month-btn");
+
+    const panelInputEl = document.getElementById("panel-input");
+    const panelTajukHariEl = document.getElementById("panel-tajuk-hari");
+    const panelSubHariEl = document.getElementById("panel-sub-hari");
+    const btnTutupPanelEl = document.getElementById("btn-tutup-panel");
+    const formHarianEl = document.getElementById("form-harian");
+    const statusSimpanEl = document.getElementById("status-simpan");
+    const btnSimpanEl = document.getElementById("btn-simpan");
+    const btnTandakanCutiEl = document.getElementById("btn-tandakan-cuti");
+    const btnBatalCutiEl = document.getElementById("btn-batal-cuti");
+
+    const inputPentadbiranEl = document.getElementById("input-pentadbiran");
+    const inputKurikulumEl = document.getElementById("input-kurikulum");
+    const inputHemEl = document.getElementById("input-hem");
+    const inputKokumEl = document.getElementById("input-kokum");
+    const inputCatatanEl = document.getElementById("input-catatan");
+    const inputNamaCutiEl = document.getElementById("input-nama-cuti");
+    const cutiNameSectionEl = document.getElementById("cuti-name-section");
+
+    let currentMonth = 0;
+
+    function isSameDate(a, b) {
+      return a.getFullYear() === b.getFullYear() &&
+             a.getMonth() === b.getMonth() &&
+             a.getDate() === b.getDate();
+    }
+
+    const defaultPublicHolidaysSabah2026 = [
+      "2026-01-01", "2026-02-16", "2026-02-17", "2026-03-30",
+      "2026-05-01", "2026-05-31", "2026-08-31", "2026-09-16", "2026-12-25"
+    ];
+
+    function isDefaultHoliday(dateObj) {
+      const key = makeDateKey(dateObj);
+      return defaultPublicHolidaysSabah2026.includes(key);
+    }
+
+    function getWeeksForMonth(year, month) {
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+
+      const shift = (firstDay.getDay() + 6) % 7;
+      const weeks = [];
+      let currentWeek = new Array(7).fill(null);
+      let dayCounter = 1;
+
+      for (let i = shift; i < 7; i++) {
+        currentWeek[i] = new Date(year, month, dayCounter++);
+      }
+      weeks.push(currentWeek);
+
+      while (dayCounter <= daysInMonth) {
+        currentWeek = new Array(7).fill(null);
+        for (let i = 0; i < 7 && dayCounter <= daysInMonth; i++) {
+          currentWeek[i] = new Date(year, month, dayCounter++);
+        }
+        weeks.push(currentWeek);
+      }
+      return weeks;
+    }
+
+    function renderCalendar(year, month) {
+      calendarGridEl.innerHTML = "";
+      currentMonth = month;
+
+      const today = new Date();
+      const weeks = getWeeksForMonth(year, month);
+      const thisMonthStyle = bulanStyles[month];
+
+      bulanNamaBannerEl.textContent = thisMonthStyle.nama;
+      bulanBannerEl.style.background = thisMonthStyle.gradient;
+      
+      const bulanHijrahEl = document.getElementById("bulan-hijrah");
+      if (bulanHijrahEl) {
+        bulanHijrahEl.textContent = gregorianToHijri(year, month);
+      }
+
+      monthButtons.forEach(btn => {
+        const btnMonth = parseInt(btn.dataset.month, 10);
+        if (btnMonth === month) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      weeks.forEach(week => {
+        week.forEach(day => {
+          const cell = document.createElement("button");
+          cell.type = "button";
+          cell.className = "day-cell relative flex flex-col items-stretch text-left rounded-lg md:rounded-xl p-2 min-h-[80px] md:min-h-[100px] bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all";
+
+          if (!day) {
+            cell.classList.add("opacity-0", "pointer-events-none");
+            calendarGridEl.appendChild(cell);
+            return;
+          }
+
+          const dateKey = makeDateKey(day);
+          const rec = findRecordByDateKey(dateKey);
+          const isCuti = rec ? !!rec.is_cuti : isDefaultHoliday(day);
+
+          if (isCuti) {
+            cell.style.background = "linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%)";
+            cell.style.borderColor = "#6b7280";
+          }
+
+          const isToday = isSameDate(day, today);
+
+          const headerDiv = document.createElement("div");
+          headerDiv.className = "flex items-center justify-between mb-1 md:mb-2";
+
+          const dayNumSpan = document.createElement("span");
+          dayNumSpan.textContent = day.getDate();
+          dayNumSpan.className = "text-base md:text-lg lg:text-xl font-bold text-gray-800";
+          if (isToday) {
+            dayNumSpan.className += " text-orange-600";
+          }
+
+          const badgeSpan = document.createElement("span");
+          badgeSpan.className = "text-[9px] md:text-[10px] lg:text-xs px-1.5 md:px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold";
+          badgeSpan.textContent = ["Isn", "Sel", "Rab", "Kha", "Jum", "Sab", "Ahd"][(day.getDay() + 6) % 7];
+
+          headerDiv.appendChild(dayNumSpan);
+          headerDiv.appendChild(badgeSpan);
+          cell.appendChild(headerDiv);
+
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "flex-1 flex flex-col gap-0.5 md:gap-1";
+
+          if (rec) {
+            if (rec.pentadbiran) {
+              const p = document.createElement("p");
+              if (rec.pentadbiran_icon) {
+                const icon = document.createElement("img");
+                icon.src = rec.pentadbiran_icon;
+                icon.className = "icon-preview";
+                p.appendChild(icon);
+              }
+              const textNode = document.createTextNode(rec.pentadbiran);
+              p.appendChild(textNode);
+              p.className = "text-[9px] md:text-[10px] lg:text-xs text-sky-700 font-semibold leading-tight";
+              contentDiv.appendChild(p);
+            }
+            if (rec.kurikulum) {
+              const p = document.createElement("p");
+              if (rec.kurikulum_icon) {
+                const icon = document.createElement("img");
+                icon.src = rec.kurikulum_icon;
+                icon.className = "icon-preview";
+                p.appendChild(icon);
+              }
+              const textNode = document.createTextNode(rec.kurikulum);
+              p.appendChild(textNode);
+              p.className = "text-[9px] md:text-[10px] lg:text-xs text-emerald-700 font-semibold leading-tight";
+              contentDiv.appendChild(p);
+            }
+            if (rec.hem) {
+              const p = document.createElement("p");
+              if (rec.hem_icon) {
+                const icon = document.createElement("img");
+                icon.src = rec.hem_icon;
+                icon.className = "icon-preview";
+                p.appendChild(icon);
+              }
+              const textNode = document.createTextNode(rec.hem);
+              p.appendChild(textNode);
+              p.className = "text-[9px] md:text-[10px] lg:text-xs text-amber-700 font-semibold leading-tight";
+              contentDiv.appendChild(p);
+            }
+            if (rec.kokum) {
+              const p = document.createElement("p");
+              if (rec.kokum_icon) {
+                const icon = document.createElement("img");
+                icon.src = rec.kokum_icon;
+                icon.className = "icon-preview";
+                p.appendChild(icon);
+              }
+              const textNode = document.createTextNode(rec.kokum);
+              p.appendChild(textNode);
+              p.className = "text-[9px] md:text-[10px] lg:text-xs text-fuchsia-700 font-semibold leading-tight";
+              contentDiv.appendChild(p);
+            }
+            if (rec.catatan) {
+              const p = document.createElement("p");
+              if (rec.catatan_icon) {
+                const icon = document.createElement("img");
+                icon.src = rec.catatan_icon;
+                icon.className = "icon-preview";
+                p.appendChild(icon);
+              }
+              const em = document.createElement("em");
+              em.textContent = rec.catatan;
+              p.appendChild(em);
+              p.className = "text-[9px] md:text-[10px] lg:text-xs text-gray-600 leading-tight";
+              contentDiv.appendChild(p);
+            }
+          }
+
+          cell.appendChild(contentDiv);
+
+          if (isCuti) {
+            const cutiBadge = document.createElement("span");
+            const cutiText = (rec && rec.nama_cuti) ? rec.nama_cuti : "Cuti";
+            cutiBadge.textContent = cutiText;
+            cutiBadge.className = "absolute top-1 md:top-2 left-1 md:left-2 text-[8px] md:text-[9px] px-1.5 md:px-2 py-0.5 rounded-full bg-gray-700 text-white font-bold shadow";
+            cell.appendChild(cutiBadge);
+          }
+
+          cell.addEventListener("click", () => {
+            openDayPanel(day, rec);
+          });
+
+          calendarGridEl.appendChild(cell);
+        });
+      });
+    }
+
+    function openDayPanel(dateObj, record) {
+      selectedDateKey = makeDateKey(dateObj);
+      selectedRecord = record || null;
+
+      const tarikhLabel = dateObj.toLocaleDateString("ms-MY", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+      panelTajukHariEl.textContent = tarikhLabel;
+      panelSubHariEl.textContent = "Isi mana-mana bahagian di bawah. Catatan hanya akan dipapar pada kalender jika diisi.";
+
+      inputPentadbiranEl.value = record && record.pentadbiran ? record.pentadbiran : "";
+      inputKurikulumEl.value = record && record.kurikulum ? record.kurikulum : "";
+      inputHemEl.value = record && record.hem ? record.hem : "";
+      inputKokumEl.value = record && record.kokum ? record.kokum : "";
+      inputCatatanEl.value = record && record.catatan ? record.catatan : "";
+      inputNamaCutiEl.value = record && record.nama_cuti ? record.nama_cuti : "";
+
+      const isCuti = record ? !!record.is_cuti : isDefaultHoliday(dateObj);
+      toggleCutiButtons(isCuti);
+      panelInputEl.classList.remove("hidden");
+      statusSimpanEl.textContent = "Perubahan belum disimpan.";
+
+      setTimeout(() => {
+        inputPentadbiranEl.focus();
+      }, 10);
+    }
+
+    function closeDayPanel() {
+      panelInputEl.classList.add("hidden");
+      selectedDateKey = null;
+      selectedRecord = null;
+      statusSimpanEl.textContent = "Tiada perubahan belum disimpan.";
+    }
+
+    function toggleCutiButtons(isCuti) {
+      if (isCuti) {
+        btnTandakanCutiEl.classList.add("hidden");
+        btnBatalCutiEl.classList.remove("hidden");
+        cutiNameSectionEl.classList.remove("hidden");
+      } else {
+        btnTandakanCutiEl.classList.remove("hidden");
+        btnBatalCutiEl.classList.add("hidden");
+        cutiNameSectionEl.classList.add("hidden");
+      }
+    }
+
+    btnTutupPanelEl.addEventListener("click", () => {
+      closeDayPanel();
+    });
+
+    formHarianEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!selectedDateKey) return;
+
+      const pentadbiran = inputPentadbiranEl.value.trim();
+      const kurikulum = inputKurikulumEl.value.trim();
+      const hem = inputHemEl.value.trim();
+      const kokum = inputKokumEl.value.trim();
+      const catatan = inputCatatanEl.value.trim();
+      const namaCuti = inputNamaCutiEl.value.trim();
+
+      const bulanName = bulanStyles[currentMonth]?.nama || "";
+      const anyText = pentadbiran || kurikulum || hem || kokum || catatan;
+      const isCuti = !btnTandakanCutiEl.classList.contains("hidden");
+
+      const existing = findRecordByDateKey(selectedDateKey);
+
+      if (!existing) {
+        if (!anyText && !isCuti) {
+          statusSimpanEl.textContent = "Tiada data untuk disimpan.";
+          return;
+        }
+
+        const nowIso = new Date().toISOString();
+        const newRecord = {
+          date_key: selectedDateKey,
+          pentadbiran: pentadbiran || "",
+          kurikulum: kurikulum || "",
+          hem: hem || "",
+          kokum: kokum || "",
+          catatan: catatan || "",
+          nama_cuti: namaCuti || "",
+          pentadbiran_icon: existing?.pentadbiran_icon || "",
+          kurikulum_icon: existing?.kurikulum_icon || "",
+          hem_icon: existing?.hem_icon || "",
+          kokum_icon: existing?.kokum_icon || "",
+          catatan_icon: existing?.catatan_icon || "",
+          is_cuti: isCuti,
+          bulan: bulanName,
+          created_at: nowIso,
+          updated_at: nowIso
+        };
+
+        currentRecords.push(newRecord);
+        saveToStorage();
+        
+        if (appsScriptUrl) {
+          await syncToGoogleSheet("create", newRecord);
+        }
+        
+        statusSimpanEl.textContent = "✓ Disimpan! Paparan kalender dikemaskini.";
+        renderCalendar(2026, currentMonth);
+        
+        if (!document.getElementById("calendar-tahunan").classList.contains("hidden")) {
+          renderYearlyCalendar();
+        }
+      } else {
+        const nowIso = new Date().toISOString();
+        existing.pentadbiran = pentadbiran || "";
+        existing.kurikulum = kurikulum || "";
+        existing.hem = hem || "";
+        existing.kokum = kokum || "";
+        existing.catatan = catatan || "";
+        existing.nama_cuti = namaCuti || "";
+        existing.is_cuti = isCuti;
+        existing.bulan = bulanName;
+        existing.updated_at = nowIso;
+
+        if (!anyText && !isCuti) {
+          currentRecords = currentRecords.filter(r => r.date_key !== selectedDateKey);
+          
+          if (appsScriptUrl) {
+            await syncToGoogleSheet("delete", existing);
+          }
+          
+          statusSimpanEl.textContent = "✓ Rekod kosong dipadam.";
+        } else {
+          if (appsScriptUrl) {
+            await syncToGoogleSheet("update", existing);
+          }
+          
+          statusSimpanEl.textContent = "✓ Perubahan berjaya disimpan.";
+        }
+
+        saveToStorage();
+        renderCalendar(2026, currentMonth);
+        
+        if (!document.getElementById("calendar-tahunan").classList.contains("hidden")) {
+          renderYearlyCalendar();
+        }
+      }
+    });
+
+    btnTandakanCutiEl.addEventListener("click", () => {
+      toggleCutiButtons(true);
+      statusSimpanEl.textContent = "Hari ini ditandakan sebagai cuti. Klik Simpan untuk kekalkan.";
+    });
+
+    btnBatalCutiEl.addEventListener("click", () => {
+      toggleCutiButtons(false);
+      statusSimpanEl.textContent = "Status cuti dibatalkan. Klik Simpan untuk kekalkan.";
+    });
+
+    monthButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const month = parseInt(btn.dataset.month, 10);
+        showMonthlyView();
+        renderCalendar(2026, month);
+      });
+    });
+
+    function showMonthlyView() {
+      document.getElementById("calendar-bulanan").classList.remove("hidden");
+      document.getElementById("calendar-tahunan").classList.add("hidden");
+      document.getElementById("bulan-banner").classList.remove("hidden");
+      
+      document.getElementById("btn-tahunan").classList.remove("active");
+      monthButtons.forEach(btn => {
+        const btnMonth = parseInt(btn.dataset.month, 10);
+        if (btnMonth === currentMonth) {
+          btn.classList.add("active");
+        }
+      });
+    }
+
+    function showYearlyView() {
+      document.getElementById("calendar-bulanan").classList.add("hidden");
+      document.getElementById("calendar-tahunan").classList.remove("hidden");
+      document.getElementById("bulan-banner").classList.add("hidden");
+      
+      document.getElementById("btn-tahunan").classList.add("active");
+      monthButtons.forEach(btn => btn.classList.remove("active"));
+      
+      renderYearlyCalendar();
+    }
+
+    function renderYearlyCalendar() {
+      const yearlyGrid = document.getElementById("yearly-calendar-grid");
+      yearlyGrid.innerHTML = "";
+
+      for (let month = 0; month < 12; month++) {
+        const monthContainer = document.createElement("div");
+        monthContainer.className = "bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-gray-200 p-2 md:p-3 shadow-md";
+
+        const monthHeader = document.createElement("div");
+        monthHeader.className = "text-center font-bold text-xs md:text-sm lg:text-base mb-1 md:mb-2 py-1.5 md:py-2 rounded-lg text-white";
+        monthHeader.style.background = bulanStyles[month].gradient;
+        monthHeader.textContent = bulanStyles[month].nama;
+        monthContainer.appendChild(monthHeader);
+
+        const miniGrid = document.createElement("div");
+        miniGrid.className = "grid grid-cols-7 gap-0.5 md:gap-1 text-[8px] md:text-[9px] lg:text-[10px]";
+
+        const dayNames = ["I", "S", "R", "K", "J", "S", "A"];
+        dayNames.forEach(day => {
+          const dayHeader = document.createElement("div");
+          dayHeader.className = "text-center font-bold text-gray-600 py-0.5 md:py-1";
+          dayHeader.textContent = day;
+          miniGrid.appendChild(dayHeader);
+        });
+
+        const weeks = getWeeksForMonth(2026, month);
+        weeks.forEach(week => {
+          week.forEach(day => {
+            const dayCell = document.createElement("div");
+            dayCell.className = "text-center py-0.5 md:py-1 rounded";
+
+            if (!day) {
+              dayCell.className += " opacity-0";
+            } else {
+              const dateKey = makeDateKey(day);
+              const rec = findRecordByDateKey(dateKey);
+              const isCuti = rec ? !!rec.is_cuti : isDefaultHoliday(day);
+
+              if (isCuti) {
+                dayCell.className += " bg-gray-400 text-white font-bold";
+              } else if (rec && (rec.pentadbiran || rec.kurikulum || rec.hem || rec.kokum)) {
+                dayCell.className += " bg-blue-500 text-white font-bold";
+              } else {
+                dayCell.className += " text-gray-700";
+              }
+
+              dayCell.textContent = day.getDate();
+            }
+
+            miniGrid.appendChild(dayCell);
+          });
+        });
+
+        monthContainer.appendChild(miniGrid);
+        yearlyGrid.appendChild(monthContainer);
+      }
+    }
+
+    const btnTahunan = document.getElementById("btn-tahunan");
+    btnTahunan.addEventListener("click", () => {
+      showYearlyView();
+    });
+
+    // Upload Logo
+    const btnUploadLogo = document.getElementById("btn-upload-logo");
+    const inputLogo = document.getElementById("input-logo");
+    
+    btnUploadLogo.addEventListener("click", () => {
+      inputLogo.click();
+    });
+    
+    inputLogo.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          logoImageData = event.target.result;
+          localStorage.setItem(LOGO_IMAGE_KEY, logoImageData);
+          updateLogoDisplay();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Upload Icons untuk setiap bahagian
+    const uploadIconBtns = document.querySelectorAll(".upload-icon-btn");
+    uploadIconBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const field = btn.dataset.field;
+        const input = document.querySelector(`.icon-input[data-field="${field}"]`);
+        if (input) input.click();
+      });
+    });
+
+    const iconInputs = document.querySelectorAll(".icon-input");
+    iconInputs.forEach(input => {
+      input.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        const field = input.dataset.field;
+        
+        if (file && selectedRecord) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const iconData = event.target.result;
+            selectedRecord[`${field}_icon`] = iconData;
+            
+            const existing = findRecordByDateKey(selectedDateKey);
+            if (existing) {
+              existing[`${field}_icon`] = iconData;
+              saveToStorage();
+              renderCalendar(2026, currentMonth);
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+
+    const btnSaveUrl = document.getElementById("btn-save-url");
+    const appsScriptUrlInput = document.getElementById("apps-script-url");
+    
+    btnSaveUrl.addEventListener("click", () => {
+      const url = appsScriptUrlInput.value.trim();
+      if (url) {
+        appsScriptUrl = url;
+        localStorage.setItem(APPS_SCRIPT_URL_KEY, url);
+        updateUrlStatus();
+        loadFromGoogleSheet();
+      }
+    });
+
+    const btnDatabase = document.getElementById("btn-database");
+    if (btnDatabase) {
+      btnDatabase.addEventListener("click", () => {
+        if (appsScriptUrl) {
+          const message = document.createElement("div");
+          message.className = "fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg shadow-lg z-50 text-xs md:text-sm font-semibold";
+          message.textContent = "✓ Data tersimpan dalam Google Sheet anda!";
+          document.body.appendChild(message);
+          
+          setTimeout(() => {
+            message.remove();
+          }, 3000);
+        }
+      });
+    }
+
+    const btnPdfSemua = document.getElementById("btn-pdf-semua");
+    btnPdfSemua.addEventListener("click", () => {
+      generatePDF("all");
+    });
+
+    const btnPdfBulan = document.getElementById("btn-pdf-bulan");
+    btnPdfBulan.addEventListener("click", () => {
+      generatePDF("current");
+    });
+
+    function generatePDF(mode) {
+      const printWindow = window.open("", "_blank");
+      
+      let htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Takwim Persekolahan 2026</title>
+          <style>
+            @media print {
+              @page { 
+                size: A4 landscape; 
+                margin: 15mm;
+              }
+              .page-break { 
+                page-break-after: always; 
+              }
+            }
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 20px;
+              background: white;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 20px;
+              border-bottom: 3px solid #3b82f6;
+              padding-bottom: 15px;
+            }
+            .header h1 {
+              margin: 0;
+              color: #1e40af;
+              font-size: 24px;
+            }
+            .header p {
+              margin: 5px 0 0 0;
+              color: #6b7280;
+              font-size: 14px;
+            }
+            .month-title {
+              background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+              color: white;
+              padding: 12px;
+              margin: 20px 0 10px 0;
+              border-radius: 8px;
+              font-size: 18px;
+              font-weight: bold;
+            }
+            .calendar-grid {
+              display: grid;
+              grid-template-columns: repeat(7, 1fr);
+              gap: 3px;
+              margin-bottom: 30px;
+            }
+            .day-header {
+              background: #dbeafe;
+              padding: 8px;
+              text-align: center;
+              font-weight: bold;
+              font-size: 12px;
+              border-radius: 4px;
+            }
+            .day-cell {
+              border: 1px solid #d1d5db;
+              padding: 8px;
+              min-height: 80px;
+              background: white;
+              border-radius: 4px;
+            }
+            .day-cell.empty {
+              background: #f9fafb;
+              border: none;
+            }
+            .day-cell.cuti {
+              background: #e5e7eb;
+            }
+            .day-number {
+              font-weight: bold;
+              font-size: 16px;
+              margin-bottom: 5px;
+              color: #1f2937;
+            }
+            .day-content {
+              font-size: 9px;
+              line-height: 1.3;
+            }
+            .pentadbiran { color: #0284c7; font-weight: 600; }
+            .kurikulum { color: #059669; font-weight: 600; }
+            .hem { color: #d97706; font-weight: 600; }
+            .kokum { color: #c026d3; font-weight: 600; }
+            .cuti-badge {
+              display: inline-block;
+              background: #6b7280;
+              color: white;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 8px;
+              font-weight: bold;
+              margin-left: 5px;
+            }
+            .legend {
+              display: flex;
+              gap: 15px;
+              justify-content: center;
+              margin-top: 15px;
+              font-size: 11px;
+              flex-wrap: wrap;
+            }
+            .legend-item {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+            }
+            .legend-color {
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>TAKWIM PERSEKOLAHAN 2026</h1>
+            <p>Dicetak pada: ${new Date().toLocaleDateString("ms-MY", { 
+              weekday: "long", 
+              year: "numeric", 
+              month: "long", 
+              day: "numeric" 
+            })}</p>
+          </div>
+          
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #0284c7;"></div>
+              <span>Pentadbiran</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #059669;"></div>
+              <span>Kurikulum</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #d97706;"></div>
+              <span>HEM</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #c026d3;"></div>
+              <span>Kokum</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #9ca3af;"></div>
+              <span>Cuti</span>
+            </div>
+          </div>
+      `;
+
+      const monthsToGenerate = mode === "all" ? [0,1,2,3,4,5,6,7,8,9,10,11] : [currentMonth];
+
+      monthsToGenerate.forEach((monthIndex, idx) => {
+        const weeks = getWeeksForMonth(2026, monthIndex);
+        const monthStyle = bulanStyles[monthIndex];
+        
+        htmlContent += `
+          <div class="${idx > 0 ? 'page-break' : ''}">
+            <div class="month-title">${monthStyle.nama}</div>
+            <div class="calendar-grid">
+              <div class="day-header">Isnin</div>
+              <div class="day-header">Selasa</div>
+              <div class="day-header">Rabu</div>
+              <div class="day-header">Khamis</div>
+              <div class="day-header">Jumaat</div>
+              <div class="day-header">Sabtu</div>
+              <div class="day-header">Ahad</div>
+        `;
+
+        weeks.forEach(week => {
+          week.forEach(day => {
+            if (!day) {
+              htmlContent += '<div class="day-cell empty"></div>';
+              return;
+            }
+
+            const dateKey = makeDateKey(day);
+            const rec = findRecordByDateKey(dateKey);
+            const isCuti = rec ? !!rec.is_cuti : isDefaultHoliday(day);
+
+            htmlContent += `<div class="day-cell ${isCuti ? 'cuti' : ''}">`;
+            const cutiLabel = (rec && rec.nama_cuti) ? rec.nama_cuti : 'Cuti';
+            htmlContent += `<div class="day-number">${day.getDate()}${isCuti ? `<span class="cuti-badge">${cutiLabel}</span>` : ''}</div>`;
+            htmlContent += '<div class="day-content">';
+
+            if (rec) {
+              if (rec.pentadbiran) {
+                htmlContent += `<div class="pentadbiran">• ${rec.pentadbiran}</div>`;
+              }
+              if (rec.kurikulum) {
+                htmlContent += `<div class="kurikulum">• ${rec.kurikulum}</div>`;
+              }
+              if (rec.hem) {
+                htmlContent += `<div class="hem">• ${rec.hem}</div>`;
+              }
+              if (rec.kokum) {
+                htmlContent += `<div class="kokum">• ${rec.kokum}</div>`;
+              }
+              if (rec.catatan) {
+                htmlContent += `<div style="color: #6b7280; font-style: italic;">• ${rec.catatan}</div>`;
+              }
+            }
+
+            htmlContent += '</div></div>';
+          });
+        });
+
+        htmlContent += '</div></div>';
+      });
+
+      htmlContent += `
+        </body>
+        </html>
+      `;
+
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    }
+
+    // ----------------
+    // ELEMENT SDK
+    // ----------------
+    function applyConfigToUI(config) {
+      const finalConfig = Object.assign({}, defaultConfig, config || {});
+
+      const baseFont = finalConfig.font_family || defaultConfig.font_family;
+      const baseSize = finalConfig.font_size || defaultConfig.font_size;
+      const fontStack = `${baseFont}, system-ui, -apple-system, sans-serif`;
+
+      const tajukEl = document.getElementById("tajuk-kalender");
+      const teksLogoEl = document.getElementById("teks-logo");
+      const teksFooterEl = document.getElementById("teks-footer");
+
+      tajukEl.textContent = finalConfig.tajuk_kalender || defaultConfig.tajuk_kalender;
+      teksLogoEl.textContent = finalConfig.teks_logo || defaultConfig.teks_logo;
+      teksFooterEl.textContent = finalConfig.teks_footer || defaultConfig.teks_footer;
+
+      const titleSize = baseSize * 1.8;
+      const bodySize = baseSize;
+      const smallSize = baseSize * 0.9;
+
+      tajukEl.style.fontFamily = fontStack;
+      tajukEl.style.fontSize = `${titleSize}px`;
+
+      teksLogoEl.style.fontFamily = fontStack;
+      teksLogoEl.style.fontSize = `${bodySize}px`;
+
+      teksFooterEl.style.fontFamily = fontStack;
+      teksFooterEl.style.fontSize = `${smallSize}px`;
+
+      document.querySelectorAll("label, textarea, button, span, p, h2").forEach(el => {
+        if (el.id === "tajuk-kalender" || el.id === "teks-logo" || el.id === "teks-footer") {
+          return;
+        }
+        el.style.fontFamily = fontStack;
+      });
+    }
+
+    function initElementSdk() {
+      if (!window.elementSdk) return;
+
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          applyConfigToUI(config);
+        },
+        mapToCapabilities: (config) => {
+          const cfg = config || {};
+          return {
+            recolorables: [
+              {
+                get: () => cfg.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  cfg.background_color = value;
+                  window.elementSdk.setConfig({ background_color: value });
+                }
+              },
+              {
+                get: () => cfg.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  cfg.surface_color = value;
+                  window.elementSdk.setConfig({ surface_color: value });
+                }
+              },
+              {
+                get: () => cfg.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  cfg.text_color = value;
+                  window.elementSdk.setConfig({ text_color: value });
+                }
+              },
+              {
+                get: () => cfg.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  cfg.primary_action_color = value;
+                  window.elementSdk.setConfig({ primary_action_color: value });
+                }
+              },
+              {
+                get: () => cfg.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => {
+                  cfg.secondary_action_color = value;
+                  window.elementSdk.setConfig({ secondary_action_color: value });
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => cfg.font_family || defaultConfig.font_family,
+              set: (value) => {
+                cfg.font_family = value;
+                window.elementSdk.setConfig({ font_family: value });
+              }
+            },
+            fontSizeable: {
+              get: () => cfg.font_size || defaultConfig.font_size,
+              set: (value) => {
+                cfg.font_size = value;
+                window.elementSdk.setConfig({ font_size: value });
+              }
+            }
+          };
+        },
+        mapToEditPanelValues: (config) => {
+          const cfg = Object.assign({}, defaultConfig, config || {});
+          return new Map([
+            ["tajuk_kalender", cfg.tajuk_kalender],
+            ["teks_logo", cfg.teks_logo],
+            ["teks_footer", cfg.teks_footer]
+          ]);
+        }
+      });
+
+      const currentConfig = window.elementSdk.config || defaultConfig;
+      applyConfigToUI(currentConfig);
+    }
+
+    (function bootstrap() {
+      loadFromStorage();
+      renderCalendar(2026, 0);
+      updateLastUpdateTime();
+
+      const checkInterval = setInterval(() => {
+        if (window.elementSdk) {
+          clearInterval(checkInterval);
+          initElementSdk();
+        } else {
+          applyConfigToUI(defaultConfig);
+        }
+      }, 150);
+    })();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a73575202980b29',t:'MTc2NDYwMDA0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
