@@ -69,7 +69,6 @@
         font-size: 10px;
       }
       .day-cell {
-        min-height: 70px !important;
         padding: 4px !important;
       }
     }
@@ -79,7 +78,6 @@
         font-size: 9px;
       }
       .day-cell {
-        min-height: 60px !important;
         padding: 3px !important;
       }
     }
@@ -146,7 +144,7 @@
        </div><span class="text-[10px] md:text-xs lg:text-sm font-normal opacity-90"> Isnin → Ahad · Klik hari untuk isi maklumat </span>
       </div>
      </div><!-- Grid Kalender Bulanan -->
-     <section id="calendar-bulanan" class="flex-1 min-h-0 w-full custom-scroll overflow-auto rounded-xl md:rounded-2xl bg-white shadow-xl border border-gray-200 p-2 md:p-4" aria-label="Kalender Bulanan"><!-- Nama Hari -->
+     <section id="calendar-bulanan" class="w-full rounded-xl md:rounded-2xl bg-white shadow-xl border border-gray-200 p-2 md:p-4" aria-label="Kalender Bulanan"><!-- Nama Hari -->
       <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2 md:mb-3 text-[10px] md:text-xs lg:text-sm font-bold text-center text-gray-700">
        <div class="py-1 md:py-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-md md:rounded-lg">
         Isn
@@ -170,7 +168,7 @@
         Ahd
        </div>
       </div><!-- Sel Hari -->
-      <div id="calendar-grid" class="calendar-grid grid grid-cols-7 gap-1 md:gap-2 text-[10px] md:text-xs lg:text-sm"></div>
+      <div id="calendar-grid" class="calendar-grid grid grid-cols-7 gap-1 md:gap-2 text-[10px] md:text-xs lg:text-sm" style="grid-auto-rows: 1fr;"></div>
      </section><!-- Grid Kalender Tahunan -->
      <section id="calendar-tahunan" class="hidden flex-1 min-h-0 w-full custom-scroll overflow-auto rounded-xl md:rounded-2xl bg-white shadow-xl border border-gray-200 p-2 md:p-4" aria-label="Kalender Tahunan">
       <div id="yearly-calendar-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6"></div>
@@ -534,7 +532,9 @@
         week.forEach(day => {
           const cell = document.createElement("button");
           cell.type = "button";
-          cell.className = "day-cell relative flex flex-col items-stretch text-left rounded-lg md:rounded-xl p-2 min-h-[80px] md:min-h-[100px] bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all";
+          cell.className = "day-cell relative flex flex-col items-stretch text-left rounded-lg md:rounded-xl p-2 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all";
+          cell.style.minHeight = "0";
+          cell.style.height = "100%";
 
           if (!day) {
             cell.classList.add("opacity-0", "pointer-events-none");
@@ -563,12 +563,7 @@
             dayNumSpan.className += " text-orange-600";
           }
 
-          const badgeSpan = document.createElement("span");
-          badgeSpan.className = "text-[9px] md:text-[10px] lg:text-xs px-1.5 md:px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold";
-          badgeSpan.textContent = ["Isn", "Sel", "Rab", "Kha", "Jum", "Sab", "Ahd"][(day.getDay() + 6) % 7];
-
           headerDiv.appendChild(dayNumSpan);
-          headerDiv.appendChild(badgeSpan);
           cell.appendChild(headerDiv);
 
           const contentDiv = document.createElement("div");
@@ -1372,5 +1367,5 @@
       }, 150);
     })();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a73575202980b29',t:'MTc2NDYwMDA0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a736e1ac4a41a53',t:'MTc2NDYwMDk3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
